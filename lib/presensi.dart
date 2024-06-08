@@ -1,14 +1,9 @@
-// ignore_for_file: avoid_unnecessary_containers, prefer_const_constructors, sort_child_properties_last
-
 import 'package:flutter/material.dart';
-
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:tubes_flutter/home.dart';
 import 'package:tubes_flutter/absence.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-
-List<String> myItems = ['X', 'XI A', 'XI B', 'XII'];
+import 'package:http/http.dart' as http;
 
 class Presensi extends StatefulWidget {
   const Presensi({Key? key}) : super(key: key);
@@ -19,13 +14,33 @@ class Presensi extends StatefulWidget {
 }
 
 class _PresensiState extends State<Presensi> {
-  String? selectedGrade; // Menyimpan nilai dropdown yang dipilih
-  DateTime? selectedDate; // Menyimpan nilai tanggal yang dipilih
+  final formKey = GlobalKey<FormState>();
+  TextEditingController name = TextEditingController();
+  TextEditingController subject = TextEditingController();
+  TextEditingController date = TextEditingController();
+  TextEditingController topic = TextEditingController();
+  TextEditingController grade = TextEditingController();
+
+  Future _simpan() async {
+    final respon = await http
+        .post(Uri.parse('http://192.168.56.1/API_Presensi/create.php'), body: {
+      'name': name.text,
+      'subject': subject.text,
+      'date': date.text,
+      'topic': topic.text,
+      'grade': grade.text
+    });
+    if (respon.statusCode == 200) {
+      return true;
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: Form(
+        key: formKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
@@ -80,7 +95,8 @@ class _PresensiState extends State<Presensi> {
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10.0)),
-                            child: TextField(
+                            child: TextFormField(
+                              controller: name,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(
@@ -89,6 +105,11 @@ class _PresensiState extends State<Presensi> {
                                       const BorderSide(color: Colors.white),
                                 ),
                               ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Nama tidak boleh kosong !";
+                                }
+                              },
                             ),
                           ),
                         ),
@@ -117,7 +138,8 @@ class _PresensiState extends State<Presensi> {
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(10.0)),
-                            child: TextField(
+                            child: TextFormField(
+                              controller: subject,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(
@@ -126,6 +148,11 @@ class _PresensiState extends State<Presensi> {
                                       const BorderSide(color: Colors.white),
                                 ),
                               ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Nama tidak boleh kosong !";
+                                }
+                              },
                             ),
                           ),
                         ),
@@ -148,29 +175,27 @@ class _PresensiState extends State<Presensi> {
                               fontWeight: FontWeight.w600),
                         ),
                         SizedBox(
-                          width: 400,
-                          height: 40,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              showDatePicker(
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2040),
-                              ).then(
-                                (value) {
-                                  if (value != null) {
-                                    setState(() {
-                                      selectedDate = value;
-                                    });
-                                  }
-                                },
-                              );
-                            },
-                            child: Text(
-                              selectedDate != null
-                                  ? "${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}"
-                                  : "Select Date",
+                          child: Container(
+                            width: 400,
+                            height: 60,
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10.0)),
+                            child: TextFormField(
+                              controller: date,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      10.0), // Square corners
+                                  borderSide:
+                                      const BorderSide(color: Colors.white),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Nama tidak boleh kosong !";
+                                }
+                              },
                             ),
                           ),
                         ),
@@ -200,7 +225,8 @@ class _PresensiState extends State<Presensi> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            child: TextField(
+                            child: TextFormField(
+                              controller: topic,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(
@@ -239,36 +265,24 @@ class _PresensiState extends State<Presensi> {
                                   width: 400,
                                   height: 60,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: DropdownButtonFormField<String>(
-                                    value: selectedGrade ??
-                                        myItems[
-                                            0], // Jika tidak ada yang dipilih, gunakan item pertama
-                                    isExpanded:
-                                        true, // Expand the dropdown menu (optional)
-                                    items: myItems
-                                        .map((String item) =>
-                                            DropdownMenuItem<String>(
-                                              value: item,
-                                              child: Text(item),
-                                            ))
-                                        .toList(),
-                                    onChanged: (String? value) {
-                                      setState(() {
-                                        selectedGrade =
-                                            value; // Perbarui nilai yang dipilih saat dropdown dipilih
-                                      });
-                                    },
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.circular(10.0)),
+                                  child: TextFormField(
+                                    controller: grade,
                                     decoration: InputDecoration(
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(
                                             10.0), // Square corners
                                         borderSide: const BorderSide(
-                                            color: Colors.grey),
+                                            color: Colors.white),
                                       ),
                                     ),
+                                    validator: (value) {
+                                      if (value!.isEmpty) {
+                                        return "Nama tidak boleh kosong !";
+                                      }
+                                    },
                                   ),
                                 ),
                               ),
@@ -291,19 +305,52 @@ class _PresensiState extends State<Presensi> {
                               10.0), // Adjust padding values as needed
                           child: ElevatedButton(
                             onPressed: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  elevation: 0,
-                                  behavior: SnackBarBehavior.floating,
-                                  backgroundColor: Colors.transparent,
-                                  content: AwesomeSnackbarContent(
-                                    title: 'Submission Successful!',
-                                    message: 'Your data has been submitted.',
-                                    contentType: ContentType.success,
-                                    color: const Color(0xFF0B60B0),
-                                  ),
-                                ),
-                              );
+                              if (formKey.currentState!.validate()) {
+                                _simpan().then((value) {
+                                  if (value) {
+                                    final snackBar = SnackBar(
+                                      content:
+                                          const Text("Data berhasil disimpan"),
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        elevation: 0,
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: Colors.transparent,
+                                        content: AwesomeSnackbarContent(
+                                          title: 'Submission Successful!',
+                                          message:
+                                              'Your data has been submitted.',
+                                          contentType: ContentType.success,
+                                          color: const Color(0xFF0B60B0),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    final snackBar = SnackBar(
+                                        content:
+                                            const Text("Data gagal disimpan"));
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        elevation: 0,
+                                        behavior: SnackBarBehavior.floating,
+                                        backgroundColor: Colors.transparent,
+                                        content: AwesomeSnackbarContent(
+                                          title: 'Submission Feiled!',
+                                          message: "Your data can't submitted.",
+                                          contentType: ContentType.success,
+                                          color: const Color(0xFF0B60B0),
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                });
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: ((context) => Presensi())),
+                                    (route) => false);
+                              }
                             },
                             child: Text(
                               "Submit",

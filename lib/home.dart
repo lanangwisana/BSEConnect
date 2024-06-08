@@ -1,7 +1,9 @@
 // import 'package:flutter/cupertino.dart';
+// ignore_for_file: avoid_unnecessary_containers
+
 import 'package:flutter/material.dart';
-// import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tubes_flutter/detail.dart';
 import 'package:tubes_flutter/presensi.dart';
 import 'package:tubes_flutter/profile.dart';
 import 'package:tubes_flutter/re_schadule.dart';
@@ -103,64 +105,101 @@ class _HomeState extends State<Home> {
               ],
             ),
             Container(
-              margin: const EdgeInsetsDirectional.only(start: 39.0, end: 29.0),
               child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        shape: BoxShape.rectangle,
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        border: Border.all(
-                          color: const Color.fromARGB(255, 11, 96, 176),
-                        ),
-                        borderRadius: BorderRadius.circular(10.0)),
-                    child: Row(
-                      children: [
-                        Image.network(
-                          'https://s3-alpha-sig.figma.com/img/15f1/b4b3/cd0bfc0ce2a95852c30c636148a67ad7?Expires=1716768000&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=NUPbOZCYiU57gX7EZuBBFkzkK13b3ToEeyUcn8jkQNLRqtEMPgMQZ9LKLBUmpL~jKJtgJ46yxv4Ik2PNhf0uokprnQ5R-fXydVa~2R6yY3smHl5c~pR5uNEAVKGMRXbO-kSXHw8S6rT-ENb4sBRk3zB9ZFdtWYkCZHDrbqmupd5EHMEsyNZZix4SWo6Wyiys2JncF5lKvqt8M7mIZGHcv8WbnikDTarn7SX3LcwLYnm08rzqE7zN1zJFrJP8~D1u~tiriN42ptZXLQ11AZ40TZH3f3InNIbnDTqfpRNH0Vhe-XR6Kj~rtl0F6HmPqfLmm-u0ps9BhdzZ-lzdbBC0bw__',
-                          width: 125,
-                          height: 125,
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            const Text(
-                              "Presence",
-                              style: TextStyle(
-                                fontFamily: "Poppins",
-                                fontSize: 15,
-                                fontStyle: FontStyle.normal,
-                                fontWeight: FontWeight.w700,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () {
+                      // Navigasi ke halaman lain
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HalamanPresensi()),
+                      );
+                    },
+                    child: Container(
+                      margin: const EdgeInsetsDirectional.only(
+                          start: 39.0, end: 29.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.rectangle,
+                              color: const Color.fromARGB(255, 255, 255, 255),
+                              border: Border.all(
+                                color: const Color.fromARGB(255, 11, 96, 176),
                               ),
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
-                            Row(
-                              children: <Widget>[
-                                SvgPicture.string(
-                                    '''<svg xmlns="http://www.w3.org/2000/svg" width="158" height="9" viewBox="0 0 158 9" fill="none">
-                                    <rect width="158" height="9" rx="4.5" fill="#D9D9D9"/>
-                                    <rect width="138" height="9" rx="4.5" fill="#0B60B0"/>
-                                  </svg>'''),
-                                Container(
-                                  padding: const EdgeInsetsDirectional.only(
-                                      start: 3.0, end: 10.0),
-                                  child: const Text(
-                                    "80%",
-                                    style: TextStyle(
-                                        color: Colors.black,
-                                        fontFamily: "Poppins",
-                                        fontSize: 10.0,
-                                        fontStyle: FontStyle.normal,
-                                        fontWeight: FontWeight.w600),
-                                  ),
+                            height: 100,
+                            width: 300,
+                            child: Row(
+                              children: [
+                                Row(
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(2.0),
+                                      child: Image.network(
+                                        "https://i.ibb.co.com/V9Zrrsm/Developer-Team-2.png",
+                                        width: 90,
+                                        height: 90,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    const Padding(
+                                      padding: EdgeInsetsDirectional.only(
+                                          start: 5.0, top: 30.0),
+                                      child: Text(
+                                        "Presence",
+                                        style: TextStyle(
+                                          fontFamily: "Poppins",
+                                          fontSize: 15,
+                                          fontStyle: FontStyle.normal,
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      children: <Widget>[
+                                        Padding(
+                                          padding: EdgeInsetsDirectional.only(
+                                              start: 5.0),
+                                          child: SvgPicture.string(
+                                              '''<svg xmlns="http://www.w3.org/2000/svg" width="158" height="9" viewBox="0 0 158 9" fill="none">
+                                              <rect width="158" height="9" rx="4.5" fill="#D9D9D9"/>
+                                              <rect width="138" height="9" rx="4.5" fill="#0B60B0"/>
+                                            </svg>'''),
+                                        ),
+                                        Container(
+                                          padding:
+                                              const EdgeInsetsDirectional.only(
+                                                  start: 3.0, end: 10.0),
+                                          child: const Text(
+                                            "80%",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontFamily: "Poppins",
+                                              fontSize: 10.0,
+                                              fontStyle: FontStyle.normal,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ],
-                            )
-                          ],
-                        ),
-                      ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
@@ -610,7 +649,7 @@ class _HomeState extends State<Home> {
             ),
             Container(
               height: 80.0,
-              margin: const EdgeInsetsDirectional.only(top: 81.2),
+              margin: const EdgeInsetsDirectional.only(top: 108.1),
               padding: const EdgeInsetsDirectional.only(top: 0.0, bottom: 0.0),
               decoration: const BoxDecoration(
                   color: Color.fromARGB(255, 11, 96, 176),
@@ -660,7 +699,7 @@ class _HomeState extends State<Home> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const ReSchadule(),
+                            builder: (context) => const Reschedule(),
                           ),
                         );
                       },
