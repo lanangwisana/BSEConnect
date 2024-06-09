@@ -1,31 +1,38 @@
-// ignore_for_file: body_might_complete_normally_nullable, prefer_const_constructors, unused_local_variable
+// ignore_for_file: body_might_complete_normally_nullable, unused_local_variable
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tubes_flutter/detail.dart';
 import 'package:tubes_flutter/home.dart';
 import 'package:tubes_flutter/absence.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:http/http.dart' as http;
 
-class Presensi extends StatefulWidget {
-  const Presensi({Key? key}) : super(key: key);
+class UbahPresensi extends StatefulWidget {
+  final Map ListData;
+  const UbahPresensi({super.key, required this.ListData});
+  // const UbahPresensi({Key? key}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
-  _PresensiState createState() => _PresensiState();
+  _UbahPresensiState createState() => _UbahPresensiState();
 }
 
-class _PresensiState extends State<Presensi> {
+class _UbahPresensiState extends State<UbahPresensi> {
   final formKey = GlobalKey<FormState>();
+  TextEditingController id = TextEditingController();
   TextEditingController name = TextEditingController();
   TextEditingController subject = TextEditingController();
   TextEditingController date = TextEditingController();
   TextEditingController topic = TextEditingController();
   TextEditingController grade = TextEditingController();
 
-  Future _simpan() async {
+  Future _ubah() async {
     final respon = await http
-        .post(Uri.parse('http://192.168.56.1/API_Presensi/create.php'), body: {
+        .post(Uri.parse('http://192.168.56.1/API_Presensi/edit.php'), body: {
+      'id': id.text,
       'name': name.text,
       'subject': subject.text,
       'date': date.text,
@@ -40,6 +47,12 @@ class _PresensiState extends State<Presensi> {
 
   @override
   Widget build(BuildContext context) {
+    id.text = widget.ListData['id'];
+    name.text = widget.ListData['name'];
+    subject.text = widget.ListData['subject'];
+    date.text = widget.ListData['date'];
+    topic.text = widget.ListData['topic'];
+    grade.text = widget.ListData['grade'];
     return Scaffold(
       body: Form(
         key: formKey,
@@ -152,7 +165,7 @@ class _PresensiState extends State<Presensi> {
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return "Nama tidak boleh kosong !";
+                                  return "Subject tidak boleh kosong !";
                                 }
                               },
                             ),
@@ -195,7 +208,7 @@ class _PresensiState extends State<Presensi> {
                               ),
                               validator: (value) {
                                 if (value!.isEmpty) {
-                                  return "Nama tidak boleh kosong !";
+                                  return "Tanggal tidak boleh kosong !";
                                 }
                               },
                             ),
@@ -237,6 +250,11 @@ class _PresensiState extends State<Presensi> {
                                       const BorderSide(color: Colors.white),
                                 ),
                               ),
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return "Topic tidak boleh kosong !";
+                                }
+                              },
                             ),
                           ),
                         ),
@@ -282,7 +300,7 @@ class _PresensiState extends State<Presensi> {
                                     ),
                                     validator: (value) {
                                       if (value!.isEmpty) {
-                                        return "Nama tidak boleh kosong !";
+                                        return "Grade tidak boleh kosong !";
                                       }
                                     },
                                   ),
@@ -308,13 +326,11 @@ class _PresensiState extends State<Presensi> {
                           child: ElevatedButton(
                             onPressed: () {
                               if (formKey.currentState!.validate()) {
-                                _simpan().then((value) {
+                                _ubah().then((value) {
                                   if (value) {
-                                    final snackBar = SnackBar(
-                                      content:
-                                          const Text("Data berhasil disimpan"),
-                                    );
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    final snackBar =
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
                                       SnackBar(
                                         elevation: 0,
                                         behavior: SnackBarBehavior.floating,
@@ -322,24 +338,23 @@ class _PresensiState extends State<Presensi> {
                                         content: AwesomeSnackbarContent(
                                           title: 'Submission Successful!',
                                           message:
-                                              'Your data has been submitted.',
+                                              'Your data has been updateed.',
                                           contentType: ContentType.success,
                                           color: const Color(0xFF0B60B0),
                                         ),
                                       ),
                                     );
                                   } else {
-                                    final snackBar = SnackBar(
-                                        content:
-                                            const Text("Data gagal disimpan"));
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    final snackBar =
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
                                       SnackBar(
                                         elevation: 0,
                                         behavior: SnackBarBehavior.floating,
                                         backgroundColor: Colors.transparent,
                                         content: AwesomeSnackbarContent(
                                           title: 'Submission Feiled!',
-                                          message: "Your data can't submitted.",
+                                          message: "Your data can't updateed.",
                                           contentType: ContentType.success,
                                           color: const Color(0xFF0B60B0),
                                         ),
@@ -350,7 +365,8 @@ class _PresensiState extends State<Presensi> {
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                        builder: ((context) => Presensi())),
+                                        builder: ((context) =>
+                                            HalamanPresensi())),
                                     (route) => false);
                               }
                             },
